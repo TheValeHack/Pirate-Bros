@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
+import main.GamePanel;
+import tiles.Tile;
+
 public class Bomber extends Player {
     private BufferedImage[][] animations;
     private int animationTick, animationIndex;
@@ -20,13 +23,33 @@ public class Bomber extends Player {
     private boolean attackReady = true;
 
 
-    public Bomber(float x, float y) {
-        super(x, y);
-        solidArea = new Rectangle(8, 32, 40, 40);
+    public Bomber(float x, float y, GamePanel gamePanel) {
+        super(x, y, gamePanel);
+        solidArea = new Rectangle(8, 20, 65, 72);
         
         loadAnimations();
     }
 
+    public boolean checkCollision(int nextX, int nextY) {
+        Rectangle futureSolidArea = new Rectangle(nextX + solidArea.x, nextY + solidArea.y, solidArea.width, solidArea.height);
+        
+        for (int col = 0; col < gamePanel.maxScreenCol; col++) {
+            for (int row = 0; row < gamePanel.maxScreenRow; row++) {
+                Tile tile = gamePanel.getGame().getTileManager().getTile(col, row);
+                if (tile.collision) {
+                    int tileX = col * gamePanel.tileSize;
+                    int tileY = row * gamePanel.tileSize;
+                    Rectangle tileRect = new Rectangle(tileX, tileY, gamePanel.tileSize, gamePanel.tileSize);
+                    if (futureSolidArea.intersects(tileRect)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    
     public void update() {
         updatePos();
         updateAnimationTick();
@@ -73,22 +96,23 @@ public class Bomber extends Player {
     private void updatePos() {
         moving = false;
 
-        if (left && !right) {
+        if (left && !right && !checkCollision((int)(x - playerSpeed), (int)y)) {
             x -= playerSpeed;
             moving = true;
-        } else if (right && !left) {
+        } else if (right && !left && !checkCollision((int)(x + playerSpeed), (int)y)) {
             x += playerSpeed;
             moving = true;
         }
 
-        if (up && !down) {
+        if (up && !down && !checkCollision((int)x, (int)(y - playerSpeed))) {
             y -= playerSpeed;
             moving = true;
-        } else if (down && !up) {
+        } else if (down && !up && !checkCollision((int)x, (int)(y + playerSpeed))) {
             y += playerSpeed;
             moving = true;
         }
     }
+
 
     private void loadAnimations() {
 		String[] animationDir = ANIMATION_DIR;

@@ -57,6 +57,12 @@ public class TileManager {
 		}
 	}
 	
+	public Tile getTile(int col, int row) {
+	    int tileNum = mapTileScheme[col][row];
+	    return tiles[tileNum];
+	}
+
+	
 	private void getTileImage() {
 		BufferedImage tileSets = importImage();
 		

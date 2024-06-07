@@ -1,6 +1,8 @@
 package main;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
 import players.Bomber;
 import tiles.TileManager;
 
@@ -18,7 +20,7 @@ public class Game implements Runnable {
     public Game() {
     	gamePanel = new GamePanel(this);
     	
-        player = new Bomber(200, 200);
+        player = new Bomber(200, 200, gamePanel);
         tileManager = new TileManager(gamePanel);
 
         
@@ -89,4 +91,9 @@ public class Game implements Runnable {
     public Bomber getPlayer() {
         return player;
     }
+
+	public TileManager getTileManager() {
+		// TODO Auto-generated method stub
+		return tileManager;
+	}
 }
