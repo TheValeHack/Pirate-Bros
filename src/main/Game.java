@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Graphics;
 import players.Bomber;
+import tiles.TileManager;
 
 public class Game implements Runnable {
 
@@ -10,13 +11,17 @@ public class Game implements Runnable {
     private Thread gameLoopThread;
     private static final int TARGET_FPS = 120;
     private static final int TARGET_UPS = 200;
+    private TileManager tileManager;
 
     private final Bomber player;
 
     public Game() {
+    	gamePanel = new GamePanel(this);
+    	
         player = new Bomber(200, 200);
+        tileManager = new TileManager(gamePanel);
 
-        gamePanel = new GamePanel(this);
+        
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus();
 
@@ -33,6 +38,7 @@ public class Game implements Runnable {
     }
 
     public void renderGame(Graphics g) {
+    	tileManager.render(g);
         player.render(g);
     }
 

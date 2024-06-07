@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import inputs.KeyboardInputs;
 import inputs.MouseInputs;
+import tiles.TileManager;
 
 import static utils.Constants.BomberConstants.*;
 import static utils.Constants.Directions.*;
@@ -22,6 +23,16 @@ public class GamePanel extends JPanel {
 
 	private MouseInputs mouseInputs;
 	private Game game;
+	private TileManager tileManager = new TileManager(this);
+	
+	public final int originalTileSize = 64;
+	public final int scale = 1;
+	
+	public final int tileSize = originalTileSize * scale;
+	public final int maxScreenCol = 20;
+	public final int maxScreenRow = 12;
+	public final int screenWidth = tileSize * maxScreenCol;
+	public final int screenHeight = tileSize * maxScreenRow;
 
 	public GamePanel(Game game) {
 		mouseInputs = new MouseInputs(this);
@@ -35,7 +46,7 @@ public class GamePanel extends JPanel {
 	}
 
 	private void setPanelSize() {
-		Dimension size = new Dimension(1280, 800);
+		Dimension size = new Dimension(screenWidth, screenHeight);
 		setPreferredSize(size);
 	}
 
@@ -45,12 +56,7 @@ public class GamePanel extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
-		g.setColor(Color.white);
-		for (int i = 0; i < 64; i++)
-			for (int j = 0; j < 40; j++)
-				g.fillRect(i * 20, j * 20, 20, 20);
-
+		
 		game.renderGame(g);
 
 	}

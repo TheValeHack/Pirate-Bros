@@ -3,6 +3,7 @@ package players;
 import static utils.Constants.BomberConstants.*;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,8 @@ public class Bomber extends Player {
 
     public Bomber(float x, float y) {
         super(x, y);
+        solidArea = new Rectangle(8, 32, 40, 40);
+        
         loadAnimations();
     }
 
