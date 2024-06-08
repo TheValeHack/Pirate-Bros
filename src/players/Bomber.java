@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
+import main.Game;
 import main.GamePanel;
+import objects.Bomb;
 import tiles.Tile;
 
 public class Bomber extends Player {
@@ -21,11 +23,20 @@ public class Bomber extends Player {
     private boolean left, up, right, down;
     private final float playerSpeed = 2.0f;
     private boolean attackReady = true;
+    private boolean isJumping = false;
+    private boolean isFalling = false;
+    private float jumpSpeed = 10.0f;
+    private float fallSpeed = 0;
+    private final float gravity = 0.065f;
+    private final float maxFallSpeed = 5.0f;
+    private Game game;
+    
+    private Bomb activeBomb;
 
-
-    public Bomber(float x, float y, GamePanel gamePanel) {
+    public Bomber(float x, float y, GamePanel gamePanel, Game game) {
         super(x, y, gamePanel);
-        solidArea = new Rectangle(8, 20, 65, 72);
+        this.game = game;
+        solidArea = new Rectangle(8, 20, 65, 74);
         
         loadAnimations();
     }
@@ -49,15 +60,23 @@ public class Bomber extends Player {
         return false;
     }
 
-    
     public void update() {
         updatePos();
         updateAnimationTick();
         setAnimation();
+        if (activeBomb != null) {
+            activeBomb.update();
+            if (activeBomb.hasExploded()) {
+                activeBomb = null;
+            }
+        }
     }
 
     public void render(Graphics g) {
         g.drawImage(animations[playerAction][animationIndex], (int) x, (int) y, 96, 96, null);
+        if (activeBomb != null) {
+            activeBomb.render(g);
+        }
     }
 
     private void updateAnimationTick() {
@@ -77,6 +96,13 @@ public class Bomber extends Player {
 
         if (attacking) {
             playerAction = HIT;
+            if (activeBomb == null) {
+                throwBomb();
+            }
+        } else if (isJumping) {
+            playerAction = JUMP;
+        } else if (isFalling) {
+            playerAction = FALL;
         } else if (moving) {
             playerAction = RUN;
         } else {
@@ -104,46 +130,74 @@ public class Bomber extends Player {
             moving = true;
         }
 
-        if (up && !down && !checkCollision((int)x, (int)(y - playerSpeed))) {
-            y -= playerSpeed;
-            moving = true;
-        } else if (down && !up && !checkCollision((int)x, (int)(y + playerSpeed))) {
-            y += playerSpeed;
-            moving = true;
+        if (isJumping) {
+            if (!checkCollision((int)x, (int)(y - jumpSpeed))) {
+                y -= jumpSpeed;
+                jumpSpeed -= gravity;
+                if (jumpSpeed <= 0) {
+                    isJumping = false;
+                    isFalling = true;
+                    fallSpeed = 0;
+                }
+            } else {
+                isJumping = false;
+                isFalling = true;
+                fallSpeed = 0;
+            }
+        } else if (isFalling || !checkCollision((int)x, (int)(y + 1))) {
+            isFalling = true;
+            if (!checkCollision((int)x, (int)(y + fallSpeed))) {
+                y += fallSpeed;
+                fallSpeed += gravity;
+                if (fallSpeed > maxFallSpeed) {
+                    fallSpeed = maxFallSpeed;
+                }
+            } else {
+                isFalling = false;
+                fallSpeed = 0;
+            }
+        } else {
+            fallSpeed = 0;
+        }
+    }
+    
+    private void throwBomb() {
+        if (activeBomb == null) {
+        	float bombInitialVelocityX = 1.5f; // Adjust as needed
+            float bombInitialVelocityY = -3.5f; // Adjust as needed
+            activeBomb = new Bomb(x + 160, y, bombInitialVelocityX, bombInitialVelocityY, game);
         }
     }
 
-
     private void loadAnimations() {
-		String[] animationDir = ANIMATION_DIR;
-		animations = new BufferedImage[11][26];
-		
-		for(int i = 0; i < animationDir.length; i++) {
-			for(int j = 0; j < GetSpriteAmount(playerAction); j++) {
-				String animationDirName = animationDir[i];
-				BufferedImage animationImage = importImage(j+1, animationDirName);
-				if(animationImage == null) {
-					break;
-				}
-				animations[i][j] = animationImage;
-			}
-		}
-		
-	}
+        String[] animationDir = ANIMATION_DIR;
+        animations = new BufferedImage[11][26];
+        
+        for(int i = 0; i < animationDir.length; i++) {
+            for(int j = 0; j < GetSpriteAmount(playerAction); j++) {
+                String animationDirName = animationDir[i];
+                BufferedImage animationImage = importImage(j+1, animationDirName);
+                if(animationImage == null) {
+                    break;
+                }
+                animations[i][j] = animationImage;
+            }
+        }
+    }
     
     private BufferedImage importImage(int frame, String dirName) {
-	    String path = String.format("/Player-Bomb Guy/%s/%d.png", dirName, frame);
-	    
-	    try (InputStream is = getClass().getResourceAsStream(path)) {
-	        if (is == null) {
-	            return null;
-	        }
-	        return ImageIO.read(is);
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	        return null;
-	    }
-	}
+        String path = String.format("/Player-Bomb Guy/%s/%d.png", dirName, frame);
+        
+        try (InputStream is = getClass().getResourceAsStream(path)) {
+            if (is == null) {
+                return null;
+            }
+            return ImageIO.read(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public void resetDirBooleans() {
         left = false;
@@ -151,24 +205,36 @@ public class Bomber extends Player {
         up = false;
         down = false;
     }
+
+    public void jump() {
+        if (!isJumping && !isFalling) {
+            isJumping = true;
+            jumpSpeed = 5.0f;
+        }
+    }
+
     public boolean getAttacking() {
-    	return attacking;
+        return attacking;
     }
+
     public boolean getAttackReady() {
-    	return attackReady;
+        return attackReady;
     }
+
     public void setAttacking(boolean attacking) {
-    	if (attackReady && attacking) {
+        if (attackReady && attacking) {
             this.attacking = true;
             attackReady = false;
         }
     }
+
     public void setAttackReady(boolean attackReady) {
         this.attackReady = attackReady;
         if (attackReady == true) {
             this.attacking = false; 
         }
     }
+
     public boolean isLeft() {
         return left;
     }

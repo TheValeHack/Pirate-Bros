@@ -20,6 +20,9 @@ public class Constants {
 		public static final int DEAD_GROUND = 8;
 		public static final int DOOR_IN = 9;
 		public static final int DOOR_OUT = 10;
+		public static final int BOMB_OFF = 11;
+		public static final int BOMB_ON = 12;
+		public static final int EXPLOTION = 13;
 		
 		public static final String[] ANIMATION_DIR = {
 			    "Idle",              // IDLE
@@ -59,6 +62,12 @@ public class Constants {
 				return 16;
 			case DOOR_OUT:
 				return 16;
+			case BOMB_OFF:
+				return 1;
+			case BOMB_ON:
+				return 10;
+			case EXPLOTION:
+				return 9;
 			default:
 				return 1;
 			}

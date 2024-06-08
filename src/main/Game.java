@@ -1,8 +1,10 @@
 package main;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import objects.Bomb;
 import players.Bomber;
 import tiles.TileManager;
 
@@ -16,11 +18,13 @@ public class Game implements Runnable {
     private TileManager tileManager;
 
     private final Bomber player;
+    private List<Bomb> bombs;
 
     public Game() {
-    	gamePanel = new GamePanel(this);
-    	
-        player = new Bomber(200, 200, gamePanel);
+        gamePanel = new GamePanel(this);
+        
+        bombs = new ArrayList<>();
+        player = new Bomber(200, 200, gamePanel, this);
         tileManager = new TileManager(gamePanel);
 
         
@@ -37,11 +41,13 @@ public class Game implements Runnable {
 
     public void updateGame() {
         player.update();
+        updateBombs();
     }
 
     public void renderGame(Graphics g) {
-    	tileManager.render(g);
+        tileManager.render(g);
         player.render(g);
+        renderBombs(g);
     }
 
     @Override
@@ -87,13 +93,38 @@ public class Game implements Runnable {
     public void handleWindowFocusLost() {
         player.resetDirBooleans();
     }
+    
+    private void updateBombs() {
+        Iterator<Bomb> iterator = bombs.iterator();
+        while (iterator.hasNext()) {
+            Bomb bomb = iterator.next();
+            bomb.update();
+            if (bomb.hasExploded()) {
+                iterator.remove();
+            }
+        }
+    }
+    private void renderBombs(Graphics g) {
+        Iterator<Bomb> iterator = bombs.iterator();
+        while (iterator.hasNext()) {
+            Bomb bomb = iterator.next();
+            bomb.render(g);
+        }
+    }
 
+    public void addBomb(Bomb bomb) {
+        bombs.add(bomb);
+    }
+
+    public void removeBomb(Bomb bomb) {
+        bombs.remove(bomb);
+    }
+    
     public Bomber getPlayer() {
         return player;
     }
 
-	public TileManager getTileManager() {
-		// TODO Auto-generated method stub
-		return tileManager;
-	}
+    public TileManager getTileManager() {
+        return tileManager;
+    }
 }
