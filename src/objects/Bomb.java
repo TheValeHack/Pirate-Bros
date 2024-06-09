@@ -8,7 +8,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 import main.Game;
 import tiles.Tile;
-import static utils.Constants.BomberConstants.*;
+import static utils.Constants.PlayerConstants.*;
 
 public class Bomb {
     private float x, y;

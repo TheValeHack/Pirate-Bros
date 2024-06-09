@@ -1,6 +1,6 @@
 package players;
 
-import static utils.Constants.PlayerConstants.*;
+import static utils.Constants.EnemyConstants.*;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -14,7 +14,7 @@ import main.GamePanel;
 import objects.Bomb;
 import tiles.Tile;
 
-public class Bomber extends Player {
+public class BigGuy extends Player {
     private BufferedImage[][] animations;
     private int animationTick, animationIndex;
     private final int animationSpeed = 12;
@@ -33,7 +33,7 @@ public class Bomber extends Player {
     
     private Bomb activeBomb;
 
-    public Bomber(float x, float y, GamePanel gamePanel, Game game) {
+    public BigGuy(float x, float y, GamePanel gamePanel, Game game) {
         super(x, y, gamePanel);
         this.game = game;
         solidArea = new Rectangle(8, 20, 65, 74);
@@ -186,7 +186,7 @@ public class Bomber extends Player {
     }
     
     private BufferedImage importImage(int frame, String dirName) {
-        String path = String.format("/Player-Bomb Guy/%s/%d.png", dirName, frame);
+        String path = String.format("/Enemy-Big Guy/%s/%d.png", dirName, frame);
         
         try (InputStream is = getClass().getResourceAsStream(path)) {
             if (is == null) {

@@ -5,7 +5,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import objects.Bomb;
+import players.BaldPirate;
+import players.BigGuy;
 import players.Bomber;
+import players.Captain;
+import players.Cucumber;
+import players.Whale;
 import tiles.TileManager;
 
 public class Game implements Runnable {
@@ -18,13 +23,23 @@ public class Game implements Runnable {
     private TileManager tileManager;
 
     private final Bomber player;
+//    private final Captain enemy;
+//    private final BigGuy enemy;
+    private final BaldPirate enemy;
+//    private final Cucumber enemy;
+//    private final Whale enemy;
     private List<Bomb> bombs;
 
     public Game() {
         gamePanel = new GamePanel(this);
         
         bombs = new ArrayList<>();
-        player = new Bomber(200, 200, gamePanel, this);
+        player = new Bomber(150, 200, gamePanel, this);
+//        enemy = new Captain(gamePanel.screenWidth - 150, 200, gamePanel, this);
+//        enemy = new BigGuy(gamePanel.screenWidth - 150, 200, gamePanel, this);
+        enemy = new BaldPirate(gamePanel.screenWidth - 150, 200, gamePanel, this);
+//        enemy = new Cucumber(gamePanel.screenWidth - 150, 200, gamePanel, this);
+//        enemy = new Whale(gamePanel.screenWidth - 150, 200, gamePanel, this);
         tileManager = new TileManager(gamePanel);
 
         
@@ -41,12 +56,14 @@ public class Game implements Runnable {
 
     public void updateGame() {
         player.update();
+        enemy.update();
         updateBombs();
     }
 
     public void renderGame(Graphics g) {
         tileManager.render(g);
         player.render(g);
+        enemy.render(g);
         renderBombs(g);
     }
 
@@ -92,6 +109,7 @@ public class Game implements Runnable {
 
     public void handleWindowFocusLost() {
         player.resetDirBooleans();
+        enemy.resetDirBooleans();
     }
     
     private void updateBombs() {
@@ -123,6 +141,22 @@ public class Game implements Runnable {
     public Bomber getPlayer() {
         return player;
     }
+    
+//    public Captain getEnemy() {
+//        return enemy;
+//    }
+//    public BigGuy getEnemy() {
+//        return enemy;
+//    }
+    public BaldPirate getEnemy() {
+        return enemy;
+    }
+//    public Cucumber getEnemy() {
+//        return enemy;
+//    }
+//    public Whale getEnemy() {
+//        return enemy;
+//    }
 
     public TileManager getTileManager() {
         return tileManager;

@@ -33,6 +33,17 @@ public class KeyboardInputs implements KeyListener {
                 break;
             case KeyEvent.VK_X:
                 gamePanel.getGame().getPlayer().setAttackReady(true);
+            case KeyEvent.VK_UP:
+                gamePanel.getGame().getEnemy().setUp(false);
+                break;
+            case KeyEvent.VK_LEFT:
+                gamePanel.getGame().getEnemy().setLeft(false);
+                break;
+            case KeyEvent.VK_RIGHT:
+                gamePanel.getGame().getEnemy().setRight(false);
+                break;
+            case KeyEvent.VK_SHIFT:
+                gamePanel.getGame().getEnemy().setAttackReady(true);
                 break;
         }
     }
@@ -51,6 +62,17 @@ public class KeyboardInputs implements KeyListener {
                 break;
             case KeyEvent.VK_X:
                 gamePanel.getGame().getPlayer().setAttacking(true);
+            case KeyEvent.VK_UP:
+                gamePanel.getGame().getEnemy().jump();
+                break;
+            case KeyEvent.VK_LEFT:
+                gamePanel.getGame().getEnemy().setLeft(true);
+                break;
+            case KeyEvent.VK_RIGHT:
+                gamePanel.getGame().getEnemy().setRight(true);
+                break;
+            case KeyEvent.VK_SHIFT:
+                gamePanel.getGame().getEnemy().setAttacking(true);
                 break;
         }
     }
