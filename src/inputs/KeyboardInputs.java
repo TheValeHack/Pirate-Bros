@@ -62,6 +62,7 @@ public class KeyboardInputs implements KeyListener {
                 break;
             case KeyEvent.VK_X:
                 gamePanel.getGame().getPlayer().setAttacking(true);
+                break;
             case KeyEvent.VK_UP:
                 gamePanel.getGame().getEnemy().jump();
                 break;

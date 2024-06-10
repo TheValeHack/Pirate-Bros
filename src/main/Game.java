@@ -40,6 +40,9 @@ public class Game implements Runnable {
         enemy = new BaldPirate(gamePanel.screenWidth - 150, 200, gamePanel, this);
 //        enemy = new Cucumber(gamePanel.screenWidth - 150, 200, gamePanel, this);
 //        enemy = new Whale(gamePanel.screenWidth - 150, 200, gamePanel, this);
+        
+        player.setEnemy(enemy);
+        enemy.setEnemy(player);
         tileManager = new TileManager(gamePanel);
 
         

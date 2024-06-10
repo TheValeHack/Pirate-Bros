@@ -2,6 +2,7 @@ package players;
 
 import static utils.Constants.PlayerConstants.*;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -9,10 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
+
 import main.Game;
 import main.GamePanel;
 import objects.Bomb;
 import tiles.Tile;
+
 
 public class Bomber extends Player {
     private BufferedImage[][] animations;
@@ -34,10 +37,9 @@ public class Bomber extends Player {
     private Bomb activeBomb;
 
     public Bomber(float x, float y, GamePanel gamePanel, Game game) {
-        super(x, y, gamePanel);
+        super(x, y, 100, gamePanel); // Example max health of 100
         this.game = game;
         solidArea = new Rectangle(8, 20, 65, 74);
-        
         loadAnimations();
     }
 
@@ -60,6 +62,7 @@ public class Bomber extends Player {
         return false;
     }
 
+    @Override
     public void update() {
         updatePos();
         updateAnimationTick();
@@ -67,16 +70,29 @@ public class Bomber extends Player {
         if (activeBomb != null) {
             activeBomb.update();
             if (activeBomb.hasExploded()) {
+                // Check for bomb explosion impact on players
+                if (activeBomb.collidesWith(enemy)) {
+                    enemy.takeDamage(activeBomb.getDamage());
+                }
                 activeBomb = null;
             }
         }
     }
+    
+    private void renderHealthBar(Graphics g) {
+        g.setColor(Color.RED);
+        g.fillRect((int) x, (int) y - 10, 96, 5);
+        g.setColor(Color.GREEN);
+        g.fillRect((int) x, (int) y - 10, (int) (96 * ((float) currentHealth / maxHealth)), 5);
+    }
 
+    @Override
     public void render(Graphics g) {
         g.drawImage(animations[playerAction][animationIndex], (int) x, (int) y, 96, 96, null);
         if (activeBomb != null) {
             activeBomb.render(g);
         }
+        renderHealthBar(g);
     }
 
     private void updateAnimationTick() {
