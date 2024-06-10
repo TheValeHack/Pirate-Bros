@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 import main.Game;
+import players.Player;
 import tiles.Tile;
 import static utils.Constants.PlayerConstants.*;
 
@@ -19,6 +20,8 @@ public class Bomb {
     private int animationTick, animationIndex;
     private final int animationSpeed = 10;
     private final Game game;
+    private final int widthBombEffect = 100;
+    private final int heightBombEffect = 100;
 
     private long explosionStartTime;
     private final long explosionDelay = 2000;
@@ -122,6 +125,16 @@ public class Bomb {
             }
         }
         return false;
+    }
+    
+    public boolean collidesWith(Player player) {
+        Rectangle bombRect = new Rectangle((int)x, (int)y, widthBombEffect, heightBombEffect); // Assuming you have width and height for bomb
+        Rectangle playerRect = new Rectangle((int)player.getX(), (int)player.getY(), widthBombEffect, heightBombEffect);;
+        return bombRect.intersects(playerRect);
+    }
+    
+    public int getDamage() {
+        return 50; // Example damage value
     }
 
     private void adjustPositionOnCollision() {
