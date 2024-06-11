@@ -13,6 +13,7 @@ public abstract class Player {
     protected int currentHealth;
     protected boolean alive;
     protected Player enemy;
+    protected boolean facingLeft = false;
 
     public Player(float x, float y, int maxHealth, GamePanel gamePanel) {
         this.x = x;

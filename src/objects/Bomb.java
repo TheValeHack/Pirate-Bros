@@ -24,13 +24,13 @@ public class Bomb {
     private final int heightBombEffect = 100;
 
     private long explosionStartTime;
-    private final long explosionDelay = 2000;
+    private final long explosionDelay = 1000;
 
     private Rectangle solidArea;
     private boolean onGround;
 
-    public Bomb(float x, float y, float velocityX, float velocityY, Game game) {
-        this.x = x;
+    public Bomb(float x, float y, float velocityX, float velocityY, Game game, int toLeft) {
+        this.x = x - (100 * toLeft);
         this.y = y;
         this.velocityX = velocityX;
         this.velocityY = velocityY;
