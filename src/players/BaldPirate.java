@@ -108,19 +108,23 @@ public class BaldPirate extends Player {
     private void setAnimation() {
         int startAnimation = playerAction;
 
-        if (attacking) {
-            playerAction = HIT;
-            if (activeBomb == null) {
-                throwBomb();
+        if(isAlive()) {
+        	if (attacking) {
+                playerAction = HIT;
+                if (activeBomb == null) {
+                    throwBomb();
+                }
+            } else if (isJumping) {
+                playerAction = JUMP;
+            } else if (isFalling) {
+                playerAction = FALL;
+            } else if (moving) {
+                playerAction = RUN;
+            } else {
+                playerAction = IDLE;
             }
-        } else if (isJumping) {
-            playerAction = JUMP;
-        } else if (isFalling) {
-            playerAction = FALL;
-        } else if (moving) {
-            playerAction = RUN;
         } else {
-            playerAction = IDLE;
+        	playerAction = DEAD_HIT;
         }
 
         if (startAnimation != playerAction) {
@@ -136,42 +140,44 @@ public class BaldPirate extends Player {
     private void updatePos() {
         moving = false;
 
-        if (left && !right && !checkCollision((int)(x - playerSpeed), (int)y)) {
-            x -= playerSpeed;
-            moving = true;
-        } else if (right && !left && !checkCollision((int)(x + playerSpeed), (int)y)) {
-            x += playerSpeed;
-            moving = true;
-        }
+        if(isAlive()) {
+        	if (left && !right && !checkCollision((int)(x - playerSpeed), (int)y)) {
+                x -= playerSpeed;
+                moving = true;
+            } else if (right && !left && !checkCollision((int)(x + playerSpeed), (int)y)) {
+                x += playerSpeed;
+                moving = true;
+            }
 
-        if (isJumping) {
-            if (!checkCollision((int)x, (int)(y - jumpSpeed))) {
-                y -= jumpSpeed;
-                jumpSpeed -= gravity;
-                if (jumpSpeed <= 0) {
+            if (isJumping) {
+                if (!checkCollision((int)x, (int)(y - jumpSpeed))) {
+                    y -= jumpSpeed;
+                    jumpSpeed -= gravity;
+                    if (jumpSpeed <= 0) {
+                        isJumping = false;
+                        isFalling = true;
+                        fallSpeed = 0;
+                    }
+                } else {
                     isJumping = false;
                     isFalling = true;
                     fallSpeed = 0;
                 }
-            } else {
-                isJumping = false;
+            } else if (isFalling || !checkCollision((int)x, (int)(y + 1))) {
                 isFalling = true;
-                fallSpeed = 0;
-            }
-        } else if (isFalling || !checkCollision((int)x, (int)(y + 1))) {
-            isFalling = true;
-            if (!checkCollision((int)x, (int)(y + fallSpeed))) {
-                y += fallSpeed;
-                fallSpeed += gravity;
-                if (fallSpeed > maxFallSpeed) {
-                    fallSpeed = maxFallSpeed;
+                if (!checkCollision((int)x, (int)(y + fallSpeed))) {
+                    y += fallSpeed;
+                    fallSpeed += gravity;
+                    if (fallSpeed > maxFallSpeed) {
+                        fallSpeed = maxFallSpeed;
+                    }
+                } else {
+                    isFalling = false;
+                    fallSpeed = 0;
                 }
             } else {
-                isFalling = false;
                 fallSpeed = 0;
             }
-        } else {
-            fallSpeed = 0;
         }
     }
     
