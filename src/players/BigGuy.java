@@ -73,7 +73,9 @@ public class BigGuy extends Player {
     }
 
     public void render(Graphics g) {
-        g.drawImage(animations[playerAction][animationIndex], (int) x, (int) y, 96, 96, null);
+    	int faceLeft = facingLeft ? -1 : 1;
+    	int widthLeft = facingLeft ? 96 : 0;
+        g.drawImage(animations[playerAction][animationIndex], (int) x + widthLeft, (int) y, faceLeft * 96, 96, null);
         if (activeBomb != null) {
             activeBomb.render(g);
         }
@@ -130,9 +132,11 @@ public class BigGuy extends Player {
         	if (left && !right && !checkCollision((int)(x - playerSpeed), (int)y)) {
                 x -= playerSpeed;
                 moving = true;
+                facingLeft = true;
             } else if (right && !left && !checkCollision((int)(x + playerSpeed), (int)y)) {
                 x += playerSpeed;
                 moving = true;
+                facingLeft = false;
             }
 
             if (isJumping) {
@@ -173,7 +177,8 @@ public class BigGuy extends Player {
         if (activeBomb == null) {
         	float bombInitialVelocityX = 1.5f; // Adjust as needed
             float bombInitialVelocityY = -3.5f; // Adjust as needed
-            activeBomb = new Bomb(x + 160, y, bombInitialVelocityX, bombInitialVelocityY, game);
+            int toLeft = facingLeft ? -1 : 1;
+            activeBomb = new Bomb(x + 160 * toLeft, y, bombInitialVelocityX * toLeft, bombInitialVelocityY, game, toLeft);
         }
     }
 

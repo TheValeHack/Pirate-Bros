@@ -33,6 +33,7 @@ public class KeyboardInputs implements KeyListener {
                 break;
             case KeyEvent.VK_X:
                 gamePanel.getGame().getPlayer().setAttackReady(true);
+                break;
             case KeyEvent.VK_UP:
                 gamePanel.getGame().getEnemy().setUp(false);
                 break;
