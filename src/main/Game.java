@@ -20,6 +20,8 @@ public class Game implements Runnable {
     private Thread gameLoopThread;
     private static final int TARGET_FPS = 120;
     private static final int TARGET_UPS = 200;
+    public static final int WIDTH = 0;
+    public static final int HEIGHT = 0;
     private TileManager tileManager;
 
     private final Bomber player;

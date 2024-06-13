@@ -16,7 +16,6 @@ public class GamePanel extends JPanel {
 	
 	public final int originalTileSize = 64;
 	public final int scale = 1;
-	
 	public final int tileSize = originalTileSize * scale;
 	public final int maxScreenCol = 20;
 	public final int maxScreenRow = 12;
@@ -31,7 +30,6 @@ public class GamePanel extends JPanel {
 		addKeyListener(new KeyboardInputs(this));
 		addMouseListener(mouseInputs);
 		addMouseMotionListener(mouseInputs);
-
 	}
 
 	private void setPanelSize() {
