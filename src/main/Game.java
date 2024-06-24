@@ -20,7 +20,7 @@ public class Game implements Runnable {
     public static final int WIDTH = 0;
     public static final int HEIGHT = 0;
     private TileManager tileManager;
-    private boolean inMainMenu = true;
+
 
 
     private final Bomber player;
@@ -30,6 +30,11 @@ public class Game implements Runnable {
 //    private final Cucumber enemy;
 //    private final Whale enemy;
     private List<Bomb> bombs;
+    private boolean inMainMenu;
+
+    public void setInMainMenu(boolean inMainMenu) {
+        this.inMainMenu = inMainMenu;
+    }
     
 
     public Game() {

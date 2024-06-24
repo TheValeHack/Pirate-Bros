@@ -51,7 +51,7 @@ public class KeyboardInputs implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (gamePanel.getGame().isInMainMenu()) {
-        MainMenu.keyPressed(e.getKeyCode());
+        MainMenu.keyPressed(e.getKeyCode(), gamePanel);
     } else {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:

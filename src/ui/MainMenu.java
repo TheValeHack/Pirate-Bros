@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import main.Game;
+import main.GamePanel;
 
 public class MainMenu {
     private static final String[] menuOptions = { "Start Game", "Instructions", "Exit" };
@@ -26,11 +27,11 @@ public class MainMenu {
         }
     }
 
-    public static void selectOption() {
+    public static void selectOption(GamePanel gamePanel) {
         switch (currentOption) {
             case 0:
                 // Start Game
-                // Implement your logic to start the game
+                gamePanel.getGame().setInMainMenu(false);
                 break;
             case 1:
                 // Instructions
@@ -45,31 +46,14 @@ public class MainMenu {
         }
     }
 
-    public static void keyPressed(int keyCode) {
+    public static void keyPressed(int keyCode, GamePanel gamePanel) {
         if (keyCode == KeyEvent.VK_UP) {
             currentOption = (currentOption - 1 + menuOptions.length) % menuOptions.length;
         } else if (keyCode == KeyEvent.VK_DOWN) {
             currentOption = (currentOption + 1) % menuOptions.length;
         } else if (keyCode == KeyEvent.VK_ENTER) {
-            selectOption();
+            selectOption(gamePanel);
         }
     }
     
-    public static void selectOption() {
-        switch (currentOption) {
-            case 0:
-                // Start Game
-                gamePanel.getGame().setInMainMenu(false);
-                break;
-            case 1:
-                // Instructions
-                // Implement logic to show instructions
-                break;
-            case 2:
-                // Exit
-                System.exit(0);
-                break;
-            default:
-                break;
-        }
-    }
+}

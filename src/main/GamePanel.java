@@ -21,6 +21,7 @@ public class GamePanel extends JPanel {
 	public final int maxScreenRow = 12;
 	public final int screenWidth = tileSize * maxScreenCol;
 	public final int screenHeight = tileSize * maxScreenRow;
+	
 
 	public GamePanel(Game game) {
 		mouseInputs = new MouseInputs(this);
