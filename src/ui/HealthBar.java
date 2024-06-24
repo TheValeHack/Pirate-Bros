@@ -13,11 +13,10 @@ public class HealthBar {
     private BufferedImage heartImage;
     private int maxHealth;
     private int currentHealth;
-
-    public HealthBar(Game game, int maxHealth) {
+     public HealthBar(Game game) {
         this.game = game;
-        this.maxHealth = maxHealth;
-        this.currentHealth = maxHealth;
+        this.maxHealth = 3;
+        this.currentHealth = 3;
         loadHealthBarAssets();
     }
 
