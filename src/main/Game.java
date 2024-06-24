@@ -6,12 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import objects.Bomb;
 import players.BaldPirate;
-import players.BigGuy;
 import players.Bomber;
-import players.Captain;
-import players.Cucumber;
-import players.Whale;
 import tiles.TileManager;
+import ui.MainMenu;
 
 public class Game implements Runnable {
 
@@ -23,6 +20,8 @@ public class Game implements Runnable {
     public static final int WIDTH = 0;
     public static final int HEIGHT = 0;
     private TileManager tileManager;
+    private boolean inMainMenu = true;
+
 
     private final Bomber player;
 //    private final Captain enemy;
@@ -31,6 +30,7 @@ public class Game implements Runnable {
 //    private final Cucumber enemy;
 //    private final Whale enemy;
     private List<Bomb> bombs;
+    
 
     public Game() {
         gamePanel = new GamePanel(this);
@@ -59,18 +59,31 @@ public class Game implements Runnable {
         gameLoopThread.start();
     }
 
-    public void updateGame() {
-        player.update();
-        enemy.update();
-        updateBombs();
+public void updateGame() {
+    if (inMainMenu) {
+        // Update the main menu
+        return;
     }
 
-    public void renderGame(Graphics g) {
-        tileManager.render(g);
-        player.render(g);
-        enemy.render(g);
-        renderBombs(g);
+    // Update the game state
+    player.update();
+    enemy.update();
+    updateBombs();
+}
+
+public void renderGame(Graphics g) {
+    if (inMainMenu) {
+        // Render the main menu
+        MainMenu.render(g);
+        return;
     }
+
+    // Render the game state
+    tileManager.render(g);
+    player.render(g);
+    enemy.render(g);
+    renderBombs(g);
+}
 
     @Override
     public void run() {
@@ -165,5 +178,10 @@ public class Game implements Runnable {
 
     public TileManager getTileManager() {
         return tileManager;
+    }
+
+    public boolean isInMainMenu() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isInMainMenu'");
     }
 }

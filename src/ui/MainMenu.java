@@ -54,4 +54,22 @@ public class MainMenu {
             selectOption();
         }
     }
-}
+    
+    public static void selectOption() {
+        switch (currentOption) {
+            case 0:
+                // Start Game
+                gamePanel.getGame().setInMainMenu(false);
+                break;
+            case 1:
+                // Instructions
+                // Implement logic to show instructions
+                break;
+            case 2:
+                // Exit
+                System.exit(0);
+                break;
+            default:
+                break;
+        }
+    }

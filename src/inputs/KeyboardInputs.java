@@ -2,9 +2,8 @@ package inputs;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import main.GamePanel;
-import static utils.Constants.Directions.*;
+import ui.MainMenu;
 
 public class KeyboardInputs implements KeyListener {
 
@@ -51,6 +50,9 @@ public class KeyboardInputs implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        if (gamePanel.getGame().isInMainMenu()) {
+        MainMenu.keyPressed(e.getKeyCode());
+    } else {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
                 gamePanel.getGame().getPlayer().jump();
@@ -79,4 +81,5 @@ public class KeyboardInputs implements KeyListener {
         }
     }
 
+    }
 }
