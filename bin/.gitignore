@@ -1,11 +1,8 @@
-/Objects-Item/
-/Player-Bomb Guy/
-/Tile-Sets/
-/inputs/
 /main/
-/objects/
-/players/
-/tiles/
-/utils/
+/gamestates/
+/inputs/
 /ui/
+/ui-sprites/
+/utils/
 /Maps/
+/players/

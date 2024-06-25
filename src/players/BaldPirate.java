@@ -35,7 +35,7 @@ public class BaldPirate extends Player {
     private Bomb activeBomb;
 
     public BaldPirate(float x, float y, GamePanel gamePanel, Game game) {
-        super(x, y, 100, gamePanel); // Example max health of 100
+        super(x, y, 200, gamePanel); // Example max health of 100
         this.game = game;
         solidArea = new Rectangle(8, 20, 65, 74);
         loadAnimations();

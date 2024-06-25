@@ -4,13 +4,10 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import objects.Bomb;
-import players.BaldPirate;
-import players.BigGuy;
-import players.Bomber;
-import players.Captain;
-import players.Cucumber;
-import players.Whale;
+
+import gamestates.Gamestate;
+import gamestates.Menu;
+import gamestates.Playing;
 import tiles.TileManager;
 
 public class Game implements Runnable {
@@ -20,31 +17,17 @@ public class Game implements Runnable {
     private Thread gameLoopThread;
     private static final int TARGET_FPS = 120;
     private static final int TARGET_UPS = 200;
-    private TileManager tileManager;
-
-    private final Bomber player;
-//    private final Captain enemy;
-//    private final BigGuy enemy;
-    private final BaldPirate enemy;
-//    private final Cucumber enemy;
-//    private final Whale enemy;
-    private List<Bomb> bombs;
+    
+    private Playing playing;
+	private Menu menu;
 
     public Game() {
         gamePanel = new GamePanel(this);
         
-        bombs = new ArrayList<>();
-        player = new Bomber(150, 200, gamePanel, this);
-//        enemy = new Captain(gamePanel.screenWidth - 150, 200, gamePanel, this);
-//        enemy = new BigGuy(gamePanel.screenWidth - 150, 200, gamePanel, this);
-        enemy = new BaldPirate(gamePanel.screenWidth - 150, 200, gamePanel, this);
-//        enemy = new Cucumber(gamePanel.screenWidth - 150, 200, gamePanel, this);
-//        enemy = new Whale(gamePanel.screenWidth - 150, 200, gamePanel, this);
-        
-        player.setEnemy(enemy);
-        enemy.setEnemy(player);
-        tileManager = new TileManager(gamePanel);
+        menu = new Menu(this);
+		playing = new Playing(this);
 
+		
         
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus();
@@ -58,16 +41,33 @@ public class Game implements Runnable {
     }
 
     public void updateGame() {
-        player.update();
-        enemy.update();
-        updateBombs();
+    	switch (Gamestate.state) {
+		case MENU:
+			menu.update();
+			break;
+		case PLAYING:
+			playing.update();
+			break;
+		case OPTIONS:
+		case QUIT:
+		default:
+			System.exit(0);
+			break;
+
+		}
     }
 
     public void renderGame(Graphics g) {
-        tileManager.render(g);
-        player.render(g);
-        enemy.render(g);
-        renderBombs(g);
+    	switch (Gamestate.state) {
+		case MENU:
+			menu.draw(g);
+			break;
+		case PLAYING:
+			playing.draw(g);
+			break;
+		default:
+			break;
+		}
     }
 
     @Override
@@ -111,39 +111,41 @@ public class Game implements Runnable {
     }
 
     public void handleWindowFocusLost() {
-        player.resetDirBooleans();
-        enemy.resetDirBooleans();
-    }
-    
-    private void updateBombs() {
-        Iterator<Bomb> iterator = bombs.iterator();
-        while (iterator.hasNext()) {
-            Bomb bomb = iterator.next();
-            bomb.update();
-            if (bomb.hasExploded()) {
-                iterator.remove();
-            }
+        if (Gamestate.state == Gamestate.PLAYING) {
+        	playing.getPlayer().resetDirBooleans();
+        	playing.getEnemy().resetDirBooleans();
         }
     }
-    private void renderBombs(Graphics g) {
-        Iterator<Bomb> iterator = bombs.iterator();
-        while (iterator.hasNext()) {
-            Bomb bomb = iterator.next();
-            bomb.render(g);
-        }
-    }
-
-    public void addBomb(Bomb bomb) {
-        bombs.add(bomb);
-    }
-
-    public void removeBomb(Bomb bomb) {
-        bombs.remove(bomb);
-    }
     
-    public Bomber getPlayer() {
-        return player;
-    }
+//    private void updateBombs() {
+//        Iterator<Bomb> iterator = bombs.iterator();
+//        while (iterator.hasNext()) {
+//            Bomb bomb = iterator.next();
+//            bomb.update();
+//            if (bomb.hasExploded()) {
+//                iterator.remove();
+//            }
+//        }
+//    }
+//    private void renderBombs(Graphics g) {
+//        Iterator<Bomb> iterator = bombs.iterator();
+//        while (iterator.hasNext()) {
+//            Bomb bomb = iterator.next();
+//            bomb.render(g);
+//        }
+//    }
+//
+//    public void addBomb(Bomb bomb) {
+//        bombs.add(bomb);
+//    }
+//
+//    public void removeBomb(Bomb bomb) {
+//        bombs.remove(bomb);
+//    }
+//    
+//    public Bomber getPlayer() {
+//        return player;
+//    }
     
 //    public Captain getEnemy() {
 //        return enemy;
@@ -151,17 +153,26 @@ public class Game implements Runnable {
 //    public BigGuy getEnemy() {
 //        return enemy;
 //    }
-    public BaldPirate getEnemy() {
-        return enemy;
-    }
+//    public BaldPirate getEnemy() {
+//        return enemy;
+//    }
 //    public Cucumber getEnemy() {
 //        return enemy;
 //    }
 //    public Whale getEnemy() {
 //        return enemy;
 //    }
+    public Menu getMenu() {
+		return menu;
+	}
 
+	public Playing getPlaying() {
+		return playing;
+	}
     public TileManager getTileManager() {
-        return tileManager;
+        return playing.getTileManager();
+    }
+    public GamePanel getGamePanel() {
+    	return gamePanel;
     }
 }
