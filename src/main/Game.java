@@ -4,13 +4,13 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import gamestate.GameState;
+import gamestate.Menu;
+import gamestate.Playing;
 import objects.Bomb;
 import players.BaldPirate;
-import players.BigGuy;
 import players.Bomber;
-import players.Captain;
-import players.Cucumber;
-import players.Whale;
 import tiles.TileManager;
 
 public class Game implements Runnable {
@@ -20,7 +20,14 @@ public class Game implements Runnable {
     private Thread gameLoopThread;
     private static final int TARGET_FPS = 120;
     private static final int TARGET_UPS = 200;
+    public static final int WIDTH = 0;
+    public static final int HEIGHT = 0;
     private TileManager tileManager;
+
+    private Playing playing;
+    private Menu menu;
+
+
 
     private final Bomber player;
 //    private final Captain enemy;
@@ -29,6 +36,7 @@ public class Game implements Runnable {
 //    private final Cucumber enemy;
 //    private final Whale enemy;
     private List<Bomb> bombs;
+    
 
     public Game() {
         gamePanel = new GamePanel(this);
@@ -57,18 +65,36 @@ public class Game implements Runnable {
         gameLoopThread.start();
     }
 
-    public void updateGame() {
-        player.update();
-        enemy.update();
-        updateBombs();
+public void updateGame() {
+    switch (GameState.state) {
+        case MAIN_MENU:
+            // menu.update();
+            break;
+        case PLAYING:
+            player.update();
+            enemy.update();
+            updateBombs();
+            break;
+        default:
+            break;
     }
+}
 
-    public void renderGame(Graphics g) {
-        tileManager.render(g);
-        player.render(g);
-        enemy.render(g);
-        renderBombs(g);
+public void renderGame(Graphics g) {
+    switch (GameState.state) {
+        case MAIN_MENU:
+            // menu.render(g);
+            break;
+        case PLAYING:
+            tileManager.render(g);
+            player.render(g);
+            enemy.render(g);
+            renderBombs(g);
+            break;
+        default:
+            break;
     }
+}
 
     @Override
     public void run() {
@@ -163,5 +189,10 @@ public class Game implements Runnable {
 
     public TileManager getTileManager() {
         return tileManager;
+    }
+
+    public boolean isInMainMenu() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isInMainMenu'");
     }
 }
