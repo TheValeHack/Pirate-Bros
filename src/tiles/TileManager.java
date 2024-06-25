@@ -17,7 +17,7 @@ public class TileManager {
 
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-        tiles = new Tile[14];
+        tiles = new Tile[18];
         tileSize = gamePanel.tileSize;
 
         mapTileScheme = new int[gamePanel.maxScreenCol][gamePanel.maxScreenRow];
@@ -61,6 +61,19 @@ public class TileManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private BufferedImage GetSpriteAtlas(String fileName) {
+        BufferedImage img = null;
+        try (InputStream is = getClass().getResourceAsStream("/Objects-Item/" + fileName)) {
+            if (is == null) {
+                throw new IOException("Resource not found: " + fileName);
+            }
+            img = ImageIO.read(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return img;
     }
 
     public Tile getTile(int col, int row) {
@@ -112,6 +125,19 @@ public class TileManager {
 
         tiles[13] = new Tile();
         tiles[13].image = tileSets.getSubimage(128, 128, 64, 64); // kayu tengah atas kiri
+        
+        tiles[14] = new Tile(false);
+        tiles[14].image = GetSpriteAtlas("Other Objects/Barrel.png"); // Objek Tong
+        
+        tiles[15] = new Tile(false);
+        tiles[15].image = GetSpriteAtlas("Other Objects/Windows.png");  // Objek Jendela
+        
+        tiles[16] = new Tile(false);
+        tiles[16].image = GetSpriteAtlas("Other Objects/Blue Bottle.png");  // Objek Botol Biru
+        
+        tiles[17] = new Tile(false);
+        tiles[17].image = GetSpriteAtlas("Other Objects/Red Bottle.png");  // Objek Botol Merah
+        
     }
 
     private BufferedImage importImage() {
@@ -137,7 +163,26 @@ public class TileManager {
         while ((col < gamePanel.maxScreenCol) && (row < gamePanel.maxScreenRow)) {
             int tileNum = mapTileScheme[col][row];
 
-            g.drawImage(tiles[tileNum].image, x, y, tileSize, tileSize, null);
+            if(tileNum < 14) {
+            	 g.drawImage(tiles[tileNum].image, x, y, tileSize, tileSize, null);
+            }
+            if(tileNum == 14) {
+            	g.drawImage(tiles[1].image, x, y, tileSize, tileSize, null);
+            	g.drawImage(tiles[tileNum].image, x, y+20, 42, 44, null);
+            }
+            if(tileNum == 15) {
+            	g.drawImage(tiles[1].image, x, y, tileSize, tileSize, null);
+            	g.drawImage(tiles[tileNum].image, x, y, 53, 53, null);
+            } 
+            if(tileNum == 16) {
+            	g.drawImage(tiles[1].image, x, y, tileSize, tileSize, null);
+            	g.drawImage(tiles[tileNum].image, x, y+29, 19, 36, null);
+            }
+            if(tileNum == 17) {
+            	g.drawImage(tiles[1].image, x, y, tileSize, tileSize, null);
+            	g.drawImage(tiles[tileNum].image, x, y+22, 19, 43, null);
+            }  
+            
             col++;
             x += tileSize;
 

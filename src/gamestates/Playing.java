@@ -8,48 +8,44 @@ import java.util.Iterator;
 import java.util.List;
 
 import players.BaldPirate;
-import players.BigGuy;
 import players.Bomber;
-import players.Captain;
-import players.Cucumber;
-import players.Whale;
 import tiles.TileManager;
 import main.Game;
 import objects.Bomb;
+import ui.GameOverOverlay;
 
 public class Playing extends State implements Statemethods {
-	private Bomber player;
-//  private final Captain enemy;
-//  private final BigGuy enemy;
-	private BaldPirate enemy;
-//  private final Cucumber enemy;
-//  private final Whale enemy;
-	private TileManager tileManager;
-	private List<Bomb> bombs;
-	private Game game;
+    private Bomber player;
+    private BaldPirate enemy;
+    private TileManager tileManager;
+    private List<Bomb> bombs;
+    private Game game;
+    private GameOverOverlay gameOverOverlay;
+    private boolean gameOver;
 
-	public Playing(Game game) {
-		super(game);
-		this.game = game;
-		initClasses();
-	}
+    public Playing(Game game) {
+        super(game);
+        this.game = game;
+        initClasses();
+    }
 
-	private void initClasses() {
-		tileManager = new TileManager(game.getGamePanel());
-		bombs = new ArrayList<>();	
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+    
+    private void initClasses() {
+        tileManager = new TileManager(game.getGamePanel());
+        bombs = new ArrayList<>();
         player = new Bomber(90, 100, game.getGamePanel(), game);
-//        enemy = new Captain(gamePanel.screenWidth - 150, 200, gamePanel, this);
-//        enemy = new BigGuy(gamePanel.screenWidth - 150, 200, gamePanel, this);
-        enemy = new BaldPirate(game.getGamePanel().screenWidth - 150, 100, game.getGamePanel(), game);
-//        enemy = new Cucumber(gamePanel.screenWidth - 150, 200, gamePanel, this);
-//        enemy = new Whale(gamePanel.screenWidth - 150, 200, gamePanel, this);
-        
+        enemy = new BaldPirate(game.getGamePanel().screenWidth - 150, 90, game.getGamePanel(), game);
+
         player.setEnemy(enemy);
         enemy.setEnemy(player);
 
-	}
-	
-	private void updateBombs() {
+        this.gameOverOverlay = new GameOverOverlay(this);
+    }
+
+    private void updateBombs() {
         Iterator<Bomb> iterator = bombs.iterator();
         while (iterator.hasNext()) {
             Bomb bomb = iterator.next();
@@ -59,6 +55,19 @@ public class Playing extends State implements Statemethods {
             }
         }
     }
+    
+    public void resetAll() {
+		gameOver = false;
+		player.reset();
+		enemy.reset();
+//		paused = false;
+//		lvlCompleted = false;
+//		playerDying = false;
+//		player.resetAll();
+//		enemyManager.resetAllEnemies();
+//		objectManager.resetAllObjects();
+	}
+
     private void renderBombs(Graphics g) {
         Iterator<Bomb> iterator = bombs.iterator();
         while (iterator.hasNext()) {
@@ -74,32 +83,40 @@ public class Playing extends State implements Statemethods {
     public void removeBomb(Bomb bomb) {
         bombs.remove(bomb);
     }
+
     public TileManager getTileManager() {
         return tileManager;
     }
 
-	@Override
-	public void update() {
-		player.update();
-		enemy.update();
-		updateBombs();
-	}
+    @Override
+    public void update() {
+        if (!gameOver) {
+            player.update();
+            enemy.update();
+            updateBombs();
+            if ((!player.isAlive() && player.isDeathAnimationDone()) || 
+                (!enemy.isAlive() && enemy.isDeathAnimationDone())) {
+                gameOver = true;
+            }
+        } else {
+            gameOverOverlay.update();
+        }
+    }
 
-	@Override
-	public void draw(Graphics g) {
-		tileManager.render(g);
-		player.render(g);
-		enemy.render(g);
-		renderBombs(g);
-	}
+    @Override
+    public void draw(Graphics g) {  
+        tileManager.render(g);
+        player.render(g);
+        enemy.render(g);
+        renderBombs(g);
+        if (gameOver) {
+        	gameOverOverlay.draw(g);
+        }
+    }
+   
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
+    @Override
+    public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
                 getPlayer().setUp(false);
@@ -158,33 +175,44 @@ public class Playing extends State implements Statemethods {
         }
     }
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (gameOver) {
+            gameOverOverlay.mouseMoved(e);
+        }
+    }
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (gameOver) {
+            gameOverOverlay.mousePressed(e);
+        }
+    }
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (gameOver) {
+            gameOverOverlay.mouseReleased(e);
+        }
+    }
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    	
+    }
 
-	}
+    public void windowFocusLost() {
+        player.resetDirBooleans();
+    }
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+    public Bomber getPlayer() {
+        return player;
+    }
 
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void windowFocusLost() {
-		player.resetDirBooleans();
-	}
-
-	public Bomber getPlayer() {
-	        return player;
-	}
-	public BaldPirate getEnemy() {
+    public BaldPirate getEnemy() {
         return enemy;
     }
 
+    private void resetGame() {
+        player.reset();
+        enemy.reset();
+        bombs.clear();
+    }
 }

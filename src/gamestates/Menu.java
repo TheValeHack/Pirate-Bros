@@ -132,8 +132,9 @@ public class Menu extends State implements Statemethods {
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER)
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			Gamestate.state = Gamestate.PLAYING;
+		}
 
 	}
 

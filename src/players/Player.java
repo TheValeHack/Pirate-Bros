@@ -7,17 +7,23 @@ import main.GamePanel;
 public abstract class Player {
     protected float x;
     protected float y;
+    protected float initialX;
+    protected float initialY;
     protected Rectangle solidArea;
-    protected GamePanel gamePanel; 
+    protected GamePanel gamePanel;
     protected int maxHealth;
     protected int currentHealth;
     protected boolean alive;
     protected Player enemy;
     protected boolean facingLeft = false;
+    protected boolean isDying = false;
+    protected boolean deathAnimationDone = false;
 
     public Player(float x, float y, int maxHealth, GamePanel gamePanel) {
         this.x = x;
         this.y = y;
+        this.initialX = x;
+        this.initialY = y;
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
         this.gamePanel = gamePanel;
@@ -29,11 +35,13 @@ public abstract class Player {
     }
 
     public void takeDamage(int damage) {
-        currentHealth -= damage;
-        if (currentHealth <= 0) {
-            currentHealth = 0;
-            alive = false;
-            // Handle player death (e.g., respawn, game over)
+        if (!isDying) {
+            currentHealth -= damage;
+            if (currentHealth <= 0) {
+                currentHealth = 0;
+                alive = false;
+                isDying = true;
+            }
         }
     }
 
@@ -59,11 +67,34 @@ public abstract class Player {
     public boolean isAlive() {
         return alive;
     }
-    public float getX() {
-    	return x;
+
+    public boolean isDying() {
+        return isDying;
     }
+
+    public boolean isDeathAnimationDone() {
+        return deathAnimationDone;
+    }
+
+    public void setDeathAnimationDone(boolean done) {
+        this.deathAnimationDone = done;
+    }
+
+    public float getX() {
+        return x;
+    }
+
     public float getY() {
-    	return y;
+        return y;
+    }
+
+    public void reset() {
+        this.x = initialX;
+        this.y = initialY;
+        this.currentHealth = maxHealth;
+        this.alive = true;
+        this.isDying = false;
+        this.deathAnimationDone = false;
     }
 
     public abstract void update();
