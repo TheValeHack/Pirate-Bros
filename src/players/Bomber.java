@@ -10,12 +10,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
-
 import main.Game;
 import main.GamePanel;
 import objects.Bomb;
 import tiles.Tile;
-
 
 public class Bomber extends Player {
     private BufferedImage[][] animations;
@@ -105,6 +103,9 @@ public class Bomber extends Player {
             if (animationIndex >= GetSpriteAmount(playerAction)) {
                 animationIndex = 0;
                 attacking = false;
+                if (playerAction == DEAD_HIT) {
+                    setDeathAnimationDone(true);
+                }
             }
         }
     }
@@ -112,8 +113,8 @@ public class Bomber extends Player {
     private void setAnimation() {
         int startAnimation = playerAction;
 
-        if(isAlive()) {
-        	if (attacking) {
+        if (isAlive()) {
+            if (attacking) {
                 playerAction = HIT;
                 if (activeBomb == null) {
                     throwBomb();
@@ -127,12 +128,15 @@ public class Bomber extends Player {
             } else {
                 playerAction = IDLE;
             }
+        } else {
+            playerAction = DEAD_HIT;
         }
 
         if (startAnimation != playerAction) {
             resetAnimationTick();
         }
     }
+
 
     private void resetAnimationTick() {
         animationTick = 0;
@@ -142,8 +146,8 @@ public class Bomber extends Player {
     private void updatePos() {
         moving = false;
 
-        if(isAlive()) {
-        	if (left && !right && !checkCollision((int)(x - playerSpeed), (int)y)) {
+        if (isAlive()) {
+            if (left && !right && !checkCollision((int)(x - playerSpeed), (int)y)) {
                 x -= playerSpeed;
                 moving = true;
                 facingLeft = true;
@@ -182,17 +186,15 @@ public class Bomber extends Player {
             } else {
                 fallSpeed = 0;
             }
-        } else {
-        	playerAction = DEAD_HIT;
         }
     }
     
     private void throwBomb() {
         if (activeBomb == null) {
-        	float bombInitialVelocityX = 1.5f; // Adjust as needed
-            float bombInitialVelocityY = -3.5f; // Adjust as needed
+        	float bombInitialVelocityX = 1.5f;
+            float bombInitialVelocityY = -3.5f;
             int toLeft = facingLeft ? -1 : 1;
-            activeBomb = new Bomb(x + 160 * toLeft, y, bombInitialVelocityX * toLeft, bombInitialVelocityY, game, toLeft);
+            activeBomb = new Bomb(x + 250 * toLeft, y, bombInitialVelocityX * toLeft, bombInitialVelocityY, game, toLeft);
         }
     }
 

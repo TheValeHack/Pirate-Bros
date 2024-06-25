@@ -1,6 +1,7 @@
 package players;
 
 import static utils.Constants.EnemyConstants.*;
+import static utils.Constants.PlayerConstants.DEAD_HIT;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -35,7 +36,7 @@ public class BaldPirate extends Player {
     private Bomb activeBomb;
 
     public BaldPirate(float x, float y, GamePanel gamePanel, Game game) {
-        super(x, y, 200, gamePanel); // Example max health of 100
+        super(x, y, 200, gamePanel);
         this.game = game;
         solidArea = new Rectangle(8, 20, 65, 74);
         loadAnimations();
@@ -103,6 +104,9 @@ public class BaldPirate extends Player {
             if (animationIndex >= GetSpriteAmount(playerAction)) {
                 animationIndex = 0;
                 attacking = false;
+                if (playerAction == DEAD_HIT) {
+                    setDeathAnimationDone(true);
+                }
             }
         }
     }
@@ -187,10 +191,10 @@ public class BaldPirate extends Player {
     
     private void throwBomb() {
         if (activeBomb == null) {
-        	float bombInitialVelocityX = 1.2f; // Adjust as needed
-            float bombInitialVelocityY = -3.5f; // Adjust as needed
+        	float bombInitialVelocityX = 1.2f;
+            float bombInitialVelocityY = -3.5f;
             int toLeft = facingLeft ? -1 : 1;
-            activeBomb = new Bomb(x + 160 * toLeft, y, bombInitialVelocityX * toLeft, bombInitialVelocityY, game, toLeft);
+            activeBomb = new Bomb(x + 250 * toLeft, y, bombInitialVelocityX * toLeft, bombInitialVelocityY, game, toLeft);
         }
     }
 
