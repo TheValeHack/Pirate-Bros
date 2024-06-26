@@ -15,6 +15,7 @@ public class Bomb {
     private float x, y;
     private float velocityX, velocityY;
     private final float gravity = 0.1f;
+    private final float restitution = 0.6f; // Coefficient of restitution for bounce effect
     private boolean exploded, explosionCompleted;
     private BufferedImage[][] bombAnimations;
     private int animationTick, animationIndex;
@@ -143,19 +144,22 @@ public class Bomb {
 
         if (velocityY > 0) { // Falling down
             y = bottomRow * tileSize - solidArea.height;
-            onGround = true;
-            velocityY = 0;
+            velocityY = -velocityY * restitution; // Bounce back with reduced speed
+            if (Math.abs(velocityY) < 0.5f) {
+                velocityY = 0;
+                onGround = true;
+            }
         } else if (velocityY < 0) { // Moving up
             y = (topRow + 1) * tileSize;
-            velocityY = 0;
+            velocityY = -velocityY * restitution; // Bounce back with reduced speed
         }
 
         if (velocityX > 0) { // Moving right
             x = rightCol * tileSize - solidArea.width;
-            velocityX = 0;
+            velocityX = -velocityX * restitution; // Bounce back with reduced speed
         } else if (velocityX < 0) { // Moving left
             x = (leftCol + 1) * tileSize;
-            velocityX = 0;
+            velocityX = -velocityX * restitution; // Bounce back with reduced speed
         }
 
         solidArea.setLocation((int)x, (int)y);
