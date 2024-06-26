@@ -98,9 +98,6 @@ public class Bomb {
 
                 if (checkCollision()) {
                     adjustPositionOnCollision();
-                    onGround = true;
-                    velocityX = 0;
-                    velocityY = 0;
                 }
             }
         }
@@ -140,7 +137,27 @@ public class Bomb {
     private void adjustPositionOnCollision() {
         int tileSize = game.getTileManager().getTileSize();
         int bottomRow = (int) ((y + solidArea.height) / tileSize);
-        y = bottomRow * tileSize - solidArea.height;
+        int topRow = (int) (y / tileSize);
+        int leftCol = (int) (x / tileSize);
+        int rightCol = (int) ((x + solidArea.width) / tileSize);
+
+        if (velocityY > 0) { // Falling down
+            y = bottomRow * tileSize - solidArea.height;
+            onGround = true;
+            velocityY = 0;
+        } else if (velocityY < 0) { // Moving up
+            y = (topRow + 1) * tileSize;
+            velocityY = 0;
+        }
+
+        if (velocityX > 0) { // Moving right
+            x = rightCol * tileSize - solidArea.width;
+            velocityX = 0;
+        } else if (velocityX < 0) { // Moving left
+            x = (leftCol + 1) * tileSize;
+            velocityX = 0;
+        }
+
         solidArea.setLocation((int)x, (int)y);
     }
 
